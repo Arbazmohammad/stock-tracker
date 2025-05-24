@@ -1,0 +1,27 @@
+name: Hourly Stock Data Fetch
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs at the top of every hour
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the script
+        run: python main.py
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          GOOGLE_CREDS_JSON: ${{ secrets.GOOGLE_CREDS_JSON }}
