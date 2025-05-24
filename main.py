@@ -20,7 +20,7 @@ client = gspread.authorize(creds)
 sheet = client.open("Stock Tracker").sheet1
 
 # Finnhub API setup
-API_KEY = os.environ.get("FINNHUB_API_KEY")
+API_KEY = os.environ.get("d0p0oqhr01qr8ds0pkogd0p0oqhr01qr8ds0pkp0")
 if not API_KEY:
     raise ValueError("Missing FINNHUB_API_KEY environment variable.")
 
