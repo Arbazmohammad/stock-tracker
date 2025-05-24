@@ -10,7 +10,6 @@ creds_dict = json.loads(os.environ["GOOGLE_CREDS_JSON"])
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
-
 sheet = client.open("Stock Tracker").sheet1
 
 API_KEY = os.environ["FINNHUB_API_KEY"]
@@ -35,33 +34,22 @@ COMPANY_NAMES = {
 
 for symbol in STOCKS:
     try:
-        # Get quote data
         quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={API_KEY}"
-
         response = requests.get(quote_url)
         data = response.json()
-        print(f"{symbol} API Response: {data}")  # Debug line
+        print(f"{symbol} API Response: {data}")
 
         current = data.get("c", None)
         previous = data.get("pc", None)
         timestamp = data.get("t", None)
 
-        # Ensure values are valid
         if not current or not previous:
-        continue
+            continue  # ✅ Indented correctly now
 
         change = round(current - previous, 2)
-        timestamp = datetime.fromtimestamp(data.get("t")).strftime("%Y-%m-%d %H:%M:%S")
+        formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
         company_name = COMPANY_NAMES.get(symbol, "Unknown")
 
-        sheet.append_row([company_name, symbol, current, previous, change, timestamp])
-
-        # Get company name
-        profile_url = f"https://finnhub.io/api/v1/stock/profile2?symbol={symbol}&token={API_KEY}"
-        profile = requests.get(profile_url).json()
-        company_name = profile.get("name", "Unknown")
-
-        # Append to sheet
         sheet.append_row([company_name, symbol, current, previous, change, formatted_time])
         print(f"✅ Logged {symbol}: {current} vs {previous}")
 
