@@ -20,14 +20,23 @@ STOCKS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "JPM", "UNH",
 if sheet.cell(1, 1).value != "Company":
     sheet.insert_row(["Company", "Symbol", "Current Price", "Previous Close", "Daily Change", "Timestamp"], 1)
 
+COMPANY_NAMES = {
+    "AAPL": "Apple Inc.",
+    "MSFT": "Microsoft Corporation",
+    "GOOGL": "Alphabet Inc.",
+    "AMZN": "Amazon.com, Inc.",
+    "TSLA": "Tesla, Inc.",
+    "META": "Meta Platforms, Inc.",
+    "NVDA": "NVIDIA Corporation",
+    "JPM": "JPMorgan Chase & Co.",
+    "UNH": "UnitedHealth Group Inc.",
+    "PEP": "PepsiCo, Inc."
+}
+
 for symbol in STOCKS:
     try:
         # Get quote data
         quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={API_KEY}"
-
-        # 🔎 Add this before the request
-        print(f"Calling API for {symbol}...")
-        print(f"API URL: {quote_url}")
 
         response = requests.get(quote_url)
         data = response.json()
@@ -39,11 +48,13 @@ for symbol in STOCKS:
 
         # Ensure values are valid
         if not current or not previous:
-            print(f"⚠️ Incomplete data for {symbol}, skipping.")
-            continue
+        continue
 
         change = round(current - previous, 2)
-        formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.fromtimestamp(data.get("t")).strftime("%Y-%m-%d %H:%M:%S")
+        company_name = COMPANY_NAMES.get(symbol, "Unknown")
+
+        sheet.append_row([company_name, symbol, current, previous, change, timestamp])
 
         # Get company name
         profile_url = f"https://finnhub.io/api/v1/stock/profile2?symbol={symbol}&token={API_KEY}"
