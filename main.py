@@ -24,6 +24,11 @@ for symbol in STOCKS:
     try:
         # Get quote data
         quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={API_KEY}"
+
+        # 🔎 Add this before the request
+        print(f"Calling API for {symbol}...")
+        print(f"API URL: {quote_url}")
+
         response = requests.get(quote_url)
         data = response.json()
         print(f"{symbol} API Response: {data}")  # Debug line
