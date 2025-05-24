@@ -13,7 +13,7 @@ client = gspread.authorize(creds)
 
 sheet = client.open("Stock Tracker").sheet1
 
-API_KEY = "d0p0oqhr01qr8ds0pkogd0p0oqhr01qr8ds0pkp0"
+API_KEY = os.environ["FINNHUB_API_KEY"]
 STOCKS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "JPM", "UNH", "PEP"]
 
 # Add headers if sheet is empty
