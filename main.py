@@ -22,28 +22,32 @@ if sheet.cell(1, 1).value != "Company":
 
 for symbol in STOCKS:
     try:
-        # Get current quote
+        # Get quote data
         quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={API_KEY}"
-        quote = requests.get(quote_url).json()
-        
-        current = quote.get("c", 0)
-        previous = quote.get("pc", 0)
+        response = requests.get(quote_url)
+        data = response.json()
+        print(f"{symbol} API Response: {data}")  # Debug line
 
-        if current == 0 or previous == 0:
-            print(f"⚠️ No data for {symbol}, skipping.")
+        current = data.get("c", None)
+        previous = data.get("pc", None)
+        timestamp = data.get("t", None)
+
+        # Ensure values are valid
+        if not current or not previous:
+            print(f"⚠️ Incomplete data for {symbol}, skipping.")
             continue
 
-        # Get company profile (name)
+        change = round(current - previous, 2)
+        formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+
+        # Get company name
         profile_url = f"https://finnhub.io/api/v1/stock/profile2?symbol={symbol}&token={API_KEY}"
         profile = requests.get(profile_url).json()
         company_name = profile.get("name", "Unknown")
 
-        change = round(current - previous, 2)
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        # Append row
-        sheet.append_row([company_name, symbol, current, previous, change, timestamp])
-        print(f"✅ {symbol} logged.")
+        # Append to sheet
+        sheet.append_row([company_name, symbol, current, previous, change, formatted_time])
+        print(f"✅ Logged {symbol}: {current} vs {previous}")
 
     except Exception as e:
         print(f"❌ Error for {symbol}: {e}")
