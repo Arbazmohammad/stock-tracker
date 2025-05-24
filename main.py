@@ -10,6 +10,9 @@ import time
 with open("creds.json", "w") as f:
     f.write(os.environ["GOOGLE_CREDS_JSON"])
 
+# Load the Google credentials from GitHub Secret
+creds_dict = json.loads(os.environ["GOOGLE_CREDS_JSON"])
+
 # Authenticate with Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
