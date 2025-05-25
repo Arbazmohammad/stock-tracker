@@ -1,8 +1,8 @@
-name: Hourly Stock Data Fetch
+name: Stock Data Fetch
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Runs at the top of every hour
+    - cron: '*/15 * * * *'  # Runs at the top of every 15 mins
   workflow_dispatch:      # Allows manual triggering
 
 jobs:
