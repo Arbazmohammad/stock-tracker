@@ -41,17 +41,18 @@ for symbol in STOCKS:
 
         current = data.get("c", None)
         previous = data.get("pc", None)
-        timestamp = data.get("t", None)
+        # timestamp = data.get("t", None)
 
         if not current or not previous:
-            continue  # ✅ Indented correctly now
+            continue  # Indented correctly now
 
         change = round(current - previous, 2)
-        formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        # formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        formatted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         company_name = COMPANY_NAMES.get(symbol, "Unknown")
 
         sheet.append_row([company_name, symbol, current, previous, change, formatted_time])
-        print(f"✅ Logged {symbol}: {current} vs {previous}")
+        print(f"Logged {symbol}: {current} vs {previous}")
 
     except Exception as e:
-        print(f"❌ Error for {symbol}: {e}")
+        print(f"Error for {symbol}: {e}")
