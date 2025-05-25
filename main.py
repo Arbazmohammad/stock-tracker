@@ -4,6 +4,7 @@ import json
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
+import pytz
 
 # Load creds from GitHub secret
 creds_dict = json.loads(os.environ["GOOGLE_CREDS_JSON"])
@@ -47,8 +48,11 @@ for symbol in STOCKS:
             continue  # Indented correctly now
 
         change = round(current - previous, 2)
+
+        # Pacific Time Zone
+        pst = pytz.timezone("US/Pacific")
         # formatted_time = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
-        formatted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        formatted_time = datetime.now(pst).strftime("%Y-%m-%d %H:%M:%S")
         company_name = COMPANY_NAMES.get(symbol, "Unknown")
 
         sheet.append_row([company_name, symbol, current, previous, change, formatted_time])
